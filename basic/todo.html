@@ -168,15 +168,15 @@
             <div class="card-header">
               <ul class="nav nav-tabs card-header-tabs">
                 <li class="nav-item">
-                  <a class="nav-link" :class="{'active':visibility == 'all'}" @click="visibility = 'all'"
+                  <a class="nav-link" :class="{'active':visibility == 'all'}" @click.prevent="visibility = 'all'"
                     href="#">全部</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" :class="{'active':visibility == 'active'}" @click="visibility = 'active'"
+                  <a class="nav-link" :class="{'active':visibility == 'active'}" @click.prevent="visibility = 'active'"
                     href="#">進行中</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" :class="{'active':visibility == 'completed'}" @click="visibility = 'completed'"
+                  <a class="nav-link" :class="{'active':visibility == 'completed'}" @click.prevent="visibility = 'completed'"
                     href="#">已完成</a>
                 </li>
               </ul>

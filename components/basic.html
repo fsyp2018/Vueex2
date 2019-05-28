@@ -128,46 +128,18 @@
     <thead>
     </thead>
     <tbody>
-      <tr v-for="(item, key) in data" :item="item" :key="key">
+      <tr is="row-component" v-for="(item, key) in data" :item="item" :key="key">
+
+      </tr>
+      <!-- <tr v-for="(item, key) in data" :item="item" :key="key">
         <td>{{ item.name }}</td>
         <td>{{ item.cash }}</td>
         <td>{{ item.icash }}</td>
-      </tr>
+      </tr> -->
     </tbody>
   </table>
 </div>
 
-<script>
-var app = new Vue({
-  el: '#app',
-  data: {
-    data: [
-      {
-        name: '小明',
-        cash: 100,
-        icash: 500,
-      },
-      {
-        name: '杰倫',
-        cash: 10000,
-        icash: 5000,
-      },
-      {
-        name: '漂亮阿姨',
-        cash: 500,
-        icash: 500,
-      },
-      {
-        name: '老媽',
-        cash: 10000,
-        icash: 100,
-      },
-    ]
-  }
-});
-</script>
-
-<!-- 
 <script type="text/x-template" id="row-component">
   <tr>
     <td>{{ item.name }}</td>
@@ -176,6 +148,7 @@ var app = new Vue({
   </tr>
 </script>
 
+<script>
 var child = {
   props: ['item'],
   template: '#row-component'
@@ -211,7 +184,53 @@ var app = new Vue({
     "row-component": child
   } 
 });
---> 
+</script>
+
+
+<script type="text/x-template" id="row-component">
+  <tr>
+    <td>{{ item.name }}</td>
+    <td>{{ item.cash }}</td>
+    <td>{{ item.icash }}</td>
+  </tr>
+</script>
+
+<!-- var child = {
+  props: ['item'],
+  template: '#row-component'
+}
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    data: [
+      {
+        name: '小明',
+        cash: 100,
+        icash: 500,
+      },
+      {
+        name: '杰倫',
+        cash: 10000,
+        icash: 5000,
+      },
+      {
+        name: '漂亮阿姨',
+        cash: 500,
+        icash: 500,
+      },
+      {
+        name: '老媽',
+        cash: 10000,
+        icash: 100,
+      },
+    ]
+  },
+  components: {
+    "row-component": child
+  } 
+}); -->
+ 
         </div>
       </div>
     </div>
