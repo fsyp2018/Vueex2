@@ -128,47 +128,75 @@
 </div>
 
 <div id="app">
-  <select name="" id="" class="form-control mb-3">
-    <option value="">--- 請選擇城市 ---</option>
+  <select name="" id="" class="form-control mb-3" v-model="filter">
+    <option value="" disabled>--- 請選擇城市 ---</option>
+    <option :value="item" v-for="item in location">{{ item }}</option>
   </select>
   <div>
     <h4>關注城市</h4>
     <div class="card-columns">
-      <div class="card status-aqi2">
-        <div class="card-header">苗栗縣 - 三義
-          <a href="#" class="float-right"><i class="fas fa-star"></i></a>
-        </div>
-        <div class="card-body">
-          <ul class="list-unstyled">
-            <li>AQI 指數: 54</li>
-            <li>PM2.5: 8</li>
-            <li>說明: 普通</li>
-          </ul>
-          2018-05-20 16:00
-        </div>
-      </div>
+        <aqi-card v-for="(item,key) in stared" :aqidata="item" @toggle-star="setStared" v-if="data" :key="key"></aqi-card>
     </div>
   </div>
+
   
   <hr>
   <div class="card-columns">
-    <div class="card status-aqi2">
-      <div class="card-header">苗栗縣 - 三義
-        <a href="#" class="float-right"><i class="far fa-star"></i></a>
-      </div>
-      <div class="card-body">
-        <ul class="list-unstyled">
-          <li>AQI 指數: 54</li>
-          <li>PM2.5: 8</li>
-          <li>說明: 普通</li>
-        </ul>
-      2018-05-20 16:00
-      </div>
+      <aqi-card v-for="(item,key) in countyFilter" :aqidata="item" @toggle-star="setStared" v-if="data" :key="key"></aqi-card>
+  </div>
+  
+
+</div>
+<script type="text/x-template" id="AQI-template">
+  <div class="card" :class="addBgColor(aqidata.Status)">
+    <div class="card-header" v-if="aqidata">{{ aqidata.County }} - {{ aqidata.SiteName }}
+      <a href="#" class="float-right" @click.prevent="pressStared(aqidata)">
+        <i class="fa-star star" :class="{ 'far' : !aqidata.addStar,'fas' : aqidata.addStar }"></i>
+      </a>
+    </div>
+    <div class="card-body">
+      <ul class="list-unstyled">
+        <li>AQI 指數: {{ aqidata.AQI }}</li>
+        <li>PM2.5: {{ aqidata["PM2.5"] }}</li>
+        <li>說明: {{ aqidata.Status }}</li>
+      </ul>
+    {{ aqidata.PublishTime }}
     </div>
   </div>
-</div>
+</script>
 
 <script>
+Vue.component('aqi-card',{
+   template:'#AQI-template',
+   props:['aqidata'],
+   methods:{
+    addBgColor(status) {
+      var color;
+      switch(status){
+        case "普通":
+          color= "status-aqi2";
+          break;
+        case "對敏感族群不健康":
+          color= "status-aqi3";
+          break;  
+        case "對所有族群不健康":
+          color= "status-aqi4";
+          break;
+        case "非常不健康":
+          color= "status-aqi5";
+          break;
+        case "危害": 
+          color= "status-aqi6"    
+          break;
+      }
+      return color;
+    },
+    pressStared(content){
+      this.$emit('toggle-star',content);
+    }
+  },
+});
+
 // API 來源
 // https://opendata.epa.gov.tw/Data/Contents/AQI/
 
@@ -182,16 +210,67 @@ var app = new Vue({
   },
   // 請在此撰寫 JavaScript
   methods: {
+    //AJAX資料匯入data
     getData() {
       const vm = this;
+      const corsUrl = 'https://cors-anywhere.herokuapp.com/'
       const api = 'http://opendata2.epa.gov.tw/AQI.json';
 
       // 使用 jQuery ajax
-      $.get(api).then(function( response ) {
-        vm.data = response;
-        console.log(response)
+      $.get(corsUrl + api).then(function( response ) {
+        var location=new Set();
+        vm.data = response;        
+        vm.data.forEach((item) =>{
+           item.addStar=false;
+           location.add(item.County)
+        });
+        vm.location=Array.from(location);
       });
     },
+    setStared(item){
+      if( item.addStar == false){
+        this.stared.push(item);
+        item.addStar = true;
+      }else{
+        this.stared.splice( this.stared.indexOf(item),1);
+        item.addStar = false;
+      }
+      var stared=JSON.stringify(this.stared);
+      localStorage.setItem('加入關注',stared);
+    }
+  },
+  created() {
+    // this.getData();
+  },
+  //開啟網頁自動執行方法methods
+  mounted() {
+    this.getData();
+    var stared=localStorage.getItem('加入關注');
+    if(stared == null){
+      stared=[];
+    }else{
+      stared=JSON.parse(stared);
+    }  
+    this.stared=stared;
+    },
+    computed:{
+    countyFilter(){
+      var vm=this;
+      var cityList=[];
+      /* 過濾Select選擇的城市 */
+      if( vm.filter != ''){
+        cityList=vm.data.filter((item) =>{
+          return item.County == vm.filter;
+        });
+      }else{
+        cityList=vm.data;
+      }
+      /* 過濾已加入關注跟原資料的差集 */
+      cityList=cityList.filter((item) =>{
+        return vm.stared.indexOf(item) == -1;
+      });
+      return cityList;
+    }
   }
 });
 </script>
