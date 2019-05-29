@@ -106,10 +106,10 @@
 <script>
 // #1
 // 修改 var -> let
-var mom = '老媽';
-(function () {
-  console.log(mom);
-})();
+// var mom = '老媽';
+// (function () {
+//   console.log(mom);
+// })();
 
 // #2
 // 修改 var -> let
@@ -147,12 +147,23 @@ var mom = '老媽';
 
 // #6
 // 額外問題，不使用 let，上述答案如何解答
+for (var i = 0; i < 10; i++) {
+  console.log(i);
+  setTimeout(function () {
+    console.log('這執行第' + i + '次');
+  }, 10);
+}
+// 解答
 // for (var i = 0; i < 10; i++) {
 //   console.log(i);
-//   setTimeout(function () {
-//     console.log('這執行第' + i + '次');
-//   }, 10);
+//   (function(i){
+//     setTimeout(function () {
+//         console.log('這執行第' + i + '次');
+//       }, 10);
+//     }
+//   )(i)
 // }
+
 </script> 
         </div>
       </div>

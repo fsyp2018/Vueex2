@@ -97,14 +97,44 @@
 </div>
 
 <div id="app">
-  <input type="email" v-model="email" v-focus v-validator="{ className: 'form-control' }">
+    <!-- <input type="email" v-model="email" v-focus v-validator="{ className: 'form-control' }"> -->
+  <input type="email" v-model="email" v-focus v-validation="{ className: 'form-control' }">
+ {{ email }}
 </div>
 
 <script>
 // 官方文件 https://cn.vuejs.org/v2/guide/custom-directive.html
 Vue.directive('focus', {
-  inserted: function(el) {
+  // 当被绑定的元素插入到 DOM 中时……
+  inserted: function (el) {
+    // 聚焦元素
     el.focus()
+  }
+});
+
+//操作DOM
+Vue.directive('validation',{
+  update:function(el,binding,vnode){
+    console.log('update',el,binding,vnode)
+    var value=el.value;
+    console.log(value);
+    var re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    console.log(value,re.test(value));
+    if (!re.test(value)) {
+      el.className = 'form-control is-invalid'
+    } else {
+      el.className = 'form-control is-valid'
+    }
+  },
+  bind:function(el,binding,vnode){
+    console.log('binding',el,binding,vnode);
+    el.className =binding.value.className;
+
+    var vModel = vnode.data.directives.find(function(item){
+      return item.name === 'model'
+    }).expression;
+    var value = vnode.context[vModel];
+    console.log('vModel',vModel,value);
   }
 })
 
@@ -137,7 +167,7 @@ Vue.directive('validator', {
     }).expression;
     var value = vnode.context[currentModel];
 
-    var re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    var re = /^\w ((-\w )|(\.\w ))*\@[A-Za-z0-9] ((\.|-)[A-Za-z0-9] )*\.[A-Za-z0-9] $/;
     if (!re.test(value)) {
       el.className = 'form-control is-invalid'
     } else {

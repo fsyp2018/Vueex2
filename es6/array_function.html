@@ -119,34 +119,89 @@ const people = [
     name: '杰倫',
     money: 60000
   },
-  {
-    name: '老媽',
-    money: Infinity
-  }
+  // {
+  //   name: '老媽',
+  //   money: Infinity
+  // }
 ];
 
 // forEach 與 map
 // 將所有物件增加 icash 有多少金額的欄位
+//傳統for的用法
+// for(let i = 0 ; i<people.length; i++){
+//   console.log(people[i]);
+// }
+
+//forEach用法
+// people.forEach(function(item,index,array){
+//   //直接在陣列中新增資料
+//   item.icash =item.money + 500;
+//   console.log('內容',item,'陣列位置',index,'陣列所有資料',array);
+// });
+
+//map的用法，跟forEach不同，他有return回去產生新的陣列
+// const newpeople = people.map(function(item,index,array){
+//   return{
+//     ...item,
+//     icash:item.money +500
+//   }
+// });
+// console.log(newpeople);
+
 
 
 // filter
 // 挑出金額少於 5000 的物件
+// const filterPeople = people.filter(function(item,index){
+//   if(item.money < 5000){
+//     return true;
+//   }
+// })
+// console.log(filterPeople)
 
-// find
+
+// find 只會找到一個
 // 1. 找到金額 = 500 的物件
 // 2. 找到 > 5000 的物件
+//
+// const findPeople = people.find(function(item,index){
+//   if(item.money == 500){
+//     return true;
+//   }
+// })
+// console.log(findPeople)
 
-// every
+
+// every 檢查所有結果都為true，才為true
 // 1. 所有物件是否都超過 10000 元
 // 2. 是否所有物件超過 300 元
+//
+// const ans = people.every(function(item,i){
+//   return item.money > 300
+// })
+// console.log(ans)
 
-// some
+// some 檢查部分結果都為true，才為true
 // 1. 是否有物件超過 10000 元
 // 2. 是否有物件持有金額少於 300元
+
+// const ans = people.some(function(item,i){
+//   return item.money < 300
+// })
+// console.log(ans)
+
 
 // reduce
 // 去除掉老媽，請問剩下的人有多少錢？
 
+const newNumber =people.reduce(function(prev,item,index){
+  console.log('prev',prev);
+  //陣列中所有的錢加總
+  // return prev + item.money
+    //陣列中比誰錢多
+  return Math.max( prev , item.money)
+},0)
+console.log(newNumber)
 </script> 
         </div>
       </div>
